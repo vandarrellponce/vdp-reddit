@@ -2,26 +2,30 @@ import { MikroORM } from '@mikro-orm/core'
 import { __prod__ } from './constants'
 import { Post } from './entities/Post'
 import mikroOrmConfig from './mikro-orm.config'
+import express from 'express'
+import { ApolloServer } from 'apollo-server-express'
+import { buildSchema } from 'type-graphql'
+import { HelloResolver } from './resolvers/hello'
 
 const main = async () => {
 	try {
-		// connect to database
 		const orm = await MikroORM.init(mikroOrmConfig)
-
-		// create command for postgresql - create table
-		// 1. add mikro-orm config to package.json,
-		// 2. create mikro-orm.config.ts,
-		// 3. run npx mikro-orm migration:create)
 		await orm.getMigrator().up()
 
-		// create post object
-		const post = orm.em.create(Post, { title: 'My first vdp post' })
+		const app = express()
+		const apolloServer = new ApolloServer({
+			schema: await buildSchema({
+				resolvers: [HelloResolver],
+				validate: false,
+			}),
+		})
 
-		// save post object
-		await orm.em.persistAndFlush(post)
+		apolloServer.applyMiddleware({ app })
 
-		const posts = await orm.em.find(Post, {})
-		console.log(posts)
+		const PORT = process.env.PORT || 5000
+		app.listen(PORT, () => {
+			console.log('Listening on localhost port ' + PORT)
+		})
 	} catch (error) {
 		console.log(error.message)
 	}
