@@ -1,0 +1,21 @@
+{
+	"name": "vdp-reddit",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"watch": "tsc -w",
+		"start": "node dist/index.js",
+		"dev": "nodemon dist/index.js",
+		"start-ts": "ts-node src/index.ts",
+		"dev-ts": "nodemon --exec ts-node src/index.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/node": "^14.14.6",
+		"ts-node": "^9.0.0",
+		"typescript": "^4.0.5"
+	}
+}
